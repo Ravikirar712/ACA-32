@@ -1,63 +1,61 @@
+var bg, backgroundImg,platformImage,platformGroup;
 
-var bg, backgroundImg;
-var iron;
-var stone;
 function preload() {
   backgroundImg = loadImage("images/bg.jpg");
-  ironMan=loadImage("images/iron.png");
-  stoneimg=loadImage("images/stone.png");
- 
-}
+  ironImage = loadImage("images/iron.png");
+  platformImage = loadImage("images/stone.png");
+  }
 
 function setup() {
   createCanvas(1000, 600);
-  bg=createSprite(580,300);
+  bg = createSprite(580,300);
   bg.addImage(backgroundImg);
-  bg.scale=2;
-  iron=createSprite(150,430,30,60);
-  iron.addImage(ironMan);
-  iron.scale=0.3;
+  bg.scale =2;
+ 
+  ironMan = createSprite(200, 505, 20, 50);
+  ironMan.addImage("running", ironImage);
+  ironMan.scale = 0.3;
+  ironMan.debug=true;
+  ironMan.setCollider("rectangle",100,0,200,400);
+  ground = createSprite(200,585,400,10);
+  ground.visible = false;
+  platformGroup = new Group();
+}
+
+function draw() {
+
   
-  stoneGroup = new group ();
+  if (keyDown("up")) {
+    ironMan.velocityY = -10;
+  }
+  if (keyDown("left")) {
+    ironMan.x = ironMan.x - 5;
+  }
+  if (keyDown("right")) {
+    ironMan.x = ironMan.x + 5;
+  }
+  ironMan.velocityY = ironMan.velocityY + 0.5;
+
+  generatePlatforms();
+  for (var i = 0; i < platformGroup.length; i++) {
+    var temp = platformGroup.get(i);
+
+    if (temp.isTouching(ironMan)) {
+      ironMan.collide(temp);
+    }
+  }
+  ironMan.collide(ground);
+  drawSprites();
+   
 }
-
-function draw() 
-{ background("black");
-  if(keyDown("up")) {
-    iron.velocityY= -10;
-  }
-  if(keyDown("left")) {
-    iron.x=iron.x-5;
-  }
-  if(keyDown("right")) {
-    iron.x=iron.x+5;
-  }
-  iron.velocityY=iron.velocityY + 0.5;
-
-  //generateStone();
-  //for(var i = 0 ; i< (stoneGroup).length ;i++){
-    //var temp = (stoneGroup).get(i) ;
+function generatePlatforms() {
+  if (frameCount % 60 === 0) {
+    var brick = createSprite(1200, 10, 40, 10);
+    brick.x = random(50, 850);
+    brick.addImage(platformImage);
+    brick.velocityY = 5;
     
-    //if (temp.isTouching(iron)) {
-       //iron.collide(temp);
-      //}
-    //}
-  //iron.scale=0.3;
-  //iron.debug=true;
-  //iron.setCollider("rectangle",10,0,200,400);
-
-  drawSprites(); 
+    brick.lifetime = 250;
+    platformGroup.add(brick);
+  }
 }
-
-//function generateStone() {
-  //if (frameCount % 70 === 0) {
-    //var stone = createSprite(1200,120,40,10);
-    //stone.y = random(50,450);
-    //stone.addImage(stone);
-    //stone.scale = 0.5;
-    //stone.velocityY = -5;
-    
-    //stone.lifetime =250;
-    //stoneGroup.add(stone);
-  //}
-//}
